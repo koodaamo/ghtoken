@@ -1,0 +1,31 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - "v*" # Triggers on v1.0, v2.1, etc.
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # CRITICAL for creating releases
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.22"
+
+      - name: Build Static Binary
+        run: |
+          # CGO_ENABLED=0 ensures a static binary that works on any Linux distro
+          CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o ghtoken main.go
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: ghtoken
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
