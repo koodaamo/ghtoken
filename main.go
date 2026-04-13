@@ -14,6 +14,8 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
+var Version = "v0.1.0"
+
 func main() {
 	if len(os.Args) < 3 {
 		fmt.Fprintf(os.Stderr, "Usage: %s <org_name> <path/to/APP_ID.pem>\n", os.Args[0])
@@ -66,7 +68,9 @@ func main() {
 		os.Exit(1)
 	}
 
-	var inst struct{ ID int64 `json:"id"` }
+	var inst struct {
+		ID int64 `json:"id"`
+	}
 	json.NewDecoder(resp.Body).Decode(&inst)
 	resp.Body.Close()
 
@@ -83,7 +87,9 @@ func main() {
 	}
 	defer resp.Body.Close()
 
-	var tr struct{ Token string `json:"token"` }
+	var tr struct {
+		Token string `json:"token"`
+	}
 	json.NewDecoder(resp.Body).Decode(&tr)
 
 	// Final Output: Just the token string
